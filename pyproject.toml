@@ -1,0 +1,31 @@
+[project]
+name = "nexus"
+version = "0.1.0"
+description = "Autonomous enterprise intelligence platform scaffold with multi-agent planning, hybrid retrieval, memory, and evaluation."
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+  "pydantic>=2.8.0",
+]
+
+[project.optional-dependencies]
+ml = [
+  "torch>=2.4.0",
+  "sentence-transformers>=3.0.0",
+]
+datastores = [
+  "qdrant-client>=1.10.0",
+  "neo4j>=5.20.0",
+  "psycopg[binary]>=3.2.0",
+  "redis>=5.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["packages", "apps/api"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["packages", "apps/api"]
+
