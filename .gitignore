@@ -4,6 +4,8 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+*.egg-info/
+*.tsbuildinfo
 node_modules/
 .next/
 dist/
@@ -12,4 +14,3 @@ build/
 .env.local
 examples/latest_report.md
 examples/latest_trace.json
-

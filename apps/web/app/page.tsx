@@ -59,23 +59,37 @@ export default function Page() {
   const [objective, setObjective] = useState(demoTrace.objective);
   const [trace, setTrace] = useState<Trace>(demoTrace);
   const [isRunning, setIsRunning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const averageScore = useMemo(() => {
+    if (trace.evaluation.length === 0) {
+      return 0;
+    }
     const total = trace.evaluation.reduce((sum, item) => sum + item.score, 0);
     return Math.round((total / trace.evaluation.length) * 100);
   }, [trace]);
 
   async function runGoal() {
+    const normalizedObjective = objective.trim();
+    if (normalizedObjective.length < 10) {
+      setError("Enter an objective with at least 10 characters.");
+      return;
+    }
+
     setIsRunning(true);
+    setError(null);
     try {
       const response = await fetch(`${apiUrl}/goals/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ objective })
+        body: JSON.stringify({ objective: normalizedObjective })
       });
-      if (response.ok) {
-        setTrace(await response.json());
+      if (!response.ok) {
+        throw new Error(`The workflow service returned ${response.status}.`);
       }
+      setTrace(await response.json());
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Unable to run the workflow.");
     } finally {
       setTimeout(() => setIsRunning(false), 450);
     }
@@ -111,8 +125,16 @@ export default function Page() {
         </header>
 
         <section className="goalBand">
-          <textarea value={objective} onChange={(event) => setObjective(event.target.value)} />
-          <button onClick={runGoal} disabled={isRunning}>
+          <div className="goalInput">
+            <label htmlFor="objective">Objective</label>
+            <textarea
+              id="objective"
+              value={objective}
+              onChange={(event) => setObjective(event.target.value)}
+            />
+            {error && <p className="errorMessage" role="alert">{error}</p>}
+          </div>
+          <button onClick={runGoal} disabled={isRunning || objective.trim().length < 10}>
             <BrainCircuit size={18} />
             {isRunning ? "Executing" : "Run Goal"}
           </button>

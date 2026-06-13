@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-from nexus_core.models import AgentResult, ExecutionPlan, Evidence
+from nexus_core.models import AgentResult, ExecutionPlan
 
 
 class ReasoningAgent:
@@ -42,4 +42,3 @@ class ReasoningAgent:
                 "opportunities": opportunities,
             },
         )
-

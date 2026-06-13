@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from nexus_core.models import AgentResult, Task
+from nexus_core.models import AgentResult, Task, TaskStatus
 from nexus_core.retrieval.hybrid import HybridRetriever
 
 
@@ -11,9 +11,9 @@ class ResearchAgent:
         self.retriever = retriever
 
     def execute(self, task: Task) -> AgentResult:
-        task.status = "running"
+        task.status = TaskStatus.RUNNING.value
         evidence = self.retriever.search(task.description)
-        task.status = "complete"
+        task.status = TaskStatus.COMPLETE.value
         return AgentResult(
             agent=self.name,
             task_id=task.id,

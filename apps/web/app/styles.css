@@ -139,6 +139,23 @@ textarea {
   padding: 12px;
 }
 
+.goalInput {
+  width: 100%;
+}
+
+.goalInput label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.errorMessage {
+  margin: 8px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
 .goalBand button {
   min-width: 138px;
   height: 46px;
@@ -152,6 +169,11 @@ textarea {
   justify-content: center;
   gap: 8px;
   cursor: pointer;
+}
+
+.goalBand button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
 }
 
 .metricsGrid,
@@ -284,14 +306,42 @@ pre {
     padding: 18px;
   }
 
-  .sidebar nav,
   .metricsGrid,
   .contentGrid {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    padding: 18px 14px;
+  }
+
+  .brand {
+    margin-bottom: 18px;
+  }
+
+  .sidebar nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .navButton {
+    justify-content: center;
+    gap: 6px;
+    padding-inline: 6px;
+    font-size: 13px;
+  }
+
+  .task {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .task > span {
+    grid-column: 2;
+    justify-self: start;
   }
 
   .wide {
     grid-column: auto;
   }
 }
-

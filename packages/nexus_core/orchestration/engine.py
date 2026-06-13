@@ -9,7 +9,7 @@ from nexus_core.agents.planner import PlannerAgent
 from nexus_core.agents.reasoning import ReasoningAgent
 from nexus_core.agents.research import ResearchAgent
 from nexus_core.memory.store import MemoryStore
-from nexus_core.models import WorkflowTrace
+from nexus_core.models import TaskStatus, WorkflowTrace
 from nexus_core.reports.generator import ReportGenerator
 from nexus_core.retrieval.hybrid import HybridRetriever
 
@@ -36,13 +36,17 @@ class NexusEngine:
         trace.agent_results.extend(research_results)
 
         reasoning_result = self.reasoning.synthesize(plan, research_results)
+        next(task for task in plan.tasks if task.owner == "reasoning").status = TaskStatus.COMPLETE.value
+
         critique_result = self.critic.review(reasoning_result)
+        next(task for task in plan.tasks if task.owner == "critic").status = TaskStatus.COMPLETE.value
+
         consensus_result = self.consensus.resolve([reasoning_result, critique_result])
 
         trace.agent_results.extend([reasoning_result, critique_result, consensus_result])
         trace.evaluation = self.evaluator.score(trace.agent_results)
         trace.report = self.reporter.generate(objective, plan, trace.agent_results, trace.evaluation)
         trace.memory_records = self.memory.persist_workflow(trace)
+        next(task for task in plan.tasks if task.owner == "evaluator").status = TaskStatus.COMPLETE.value
         trace.completed_at = datetime.now(UTC)
         return trace
-
